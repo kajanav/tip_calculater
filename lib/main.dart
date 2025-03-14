@@ -30,7 +30,15 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
+TextEditingController billController = TextEditingController();
+
 List<bool> _selected = [true, false, false, false, false];
+
+double billAmount = 0.0;
+double totalBillAmount = 0.0;
+int tipIndex = 0;
+double tipPercent = 0.0;
+double tipAmount = 0.0; 
 
 class _HomePageState extends State<HomePage> {
   @override
@@ -71,6 +79,7 @@ class _HomePageState extends State<HomePage> {
               Container(
                 width: 200,
                 child: TextFormField(
+                  controller: billController,
                   style: GoogleFonts.roboto(
                     fontSize: 30,
                     fontWeight: FontWeight.bold,
@@ -133,8 +142,17 @@ class _HomePageState extends State<HomePage> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  onPressed: () {},
-                ),
+                  onPressed: () {
+                    billAmount = double.parse(billController.text.trim()); 
+                    tipIndex = _selected.indexWhere((element)=> element);
+                    tipPercent = [0.1,0.15,0.2,0.25,0.3][tipIndex];
+
+                    setState(() {
+                      tipAmount = double.parse((billAmount * tipPercent).toStringAsFixed(2));
+                    totalBillAmount = double.parse((billAmount +tipAmount).toStringAsFixed(2));
+                    });
+                  },
+                ), 
               ),
           
               SizedBox(height: 50),
@@ -143,7 +161,7 @@ class _HomePageState extends State<HomePage> {
                 style: GoogleFonts.roboto(color: Color(0xFF9EA1A1), fontSize: 25),
               ),
               Text(
-                '\$00.00',
+                '\$$totalBillAmount',
                 style: GoogleFonts.roboto(
                   color: Color(0xFFE91E63),
                   fontSize: 50,
@@ -161,7 +179,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               Text(
-                '\$0.00',
+                '\$$tipAmount',
                 style: GoogleFonts.roboto(
                   color: Color(0xFFE91E63),
                   fontSize: 30,
